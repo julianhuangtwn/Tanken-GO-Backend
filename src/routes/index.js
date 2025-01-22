@@ -19,6 +19,7 @@ const router = express.Router();
  */
 // router.use(`/v1`, authenticate(), require('./api'));
 router.use(`/v1`, require('./api'));
+router.use("/auth", require("../auth/register"));
 
 /**
  * Define a simple health check route. If the server is running
