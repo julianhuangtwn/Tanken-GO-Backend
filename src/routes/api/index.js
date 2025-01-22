@@ -8,6 +8,7 @@ const { createSuccessResponse, createErrorResponse } = require('../../response')
 const router = express.Router();
 
 router.get('/users', require('./get'));
+router.post('/login', require('./login')); // Handle post requests to login route
 
 router.get('/ai', async(req,res) =>{
     try{
