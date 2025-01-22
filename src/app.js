@@ -33,6 +33,8 @@ app.use(compression());
 // passport.use(authenticate.strategy());
 // app.use(passport.initialize());
 
+app.use(express.json());  // Middleware to parse JSON bodies
+
 app.use('/', require('./routes'));
 
 // Add 404 middleware to handle any requests for resources that can't be found
