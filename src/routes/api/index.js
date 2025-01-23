@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.get('/users', require('./get'));
 router.post('/login', require('./login')); // Handle post requests to login route
-router.get('/ai', require('./ai')) // going to change that to post
+router.post('/ai', require('./ai'))
 
 module.exports = router;

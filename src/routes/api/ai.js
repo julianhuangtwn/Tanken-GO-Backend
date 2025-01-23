@@ -3,8 +3,8 @@ const { createSuccessResponse, createErrorResponse } = require('../../response')
 
 module.exports = async(req,res) =>{
     try{
-        res.status(200).json(createSuccessResponse(await example()));
+        return res.status(200).json(createSuccessResponse(await example(req)));
     } catch(err) {
-        res.status(500).json(createErrorResponse(500, err.message));
+        return res.status(500).json(createErrorResponse(500, err.message));
     }
   }
