@@ -1,6 +1,7 @@
 const { findUserByEmail } = require('../../models/data/findUserbyEmail.js');
 const { findUserByPhone } = require('../../models/data/findUserByPhone.js');
 const { createSuccessResponse, createErrorResponse } = require('../../response')
+const bcrypt = require('bcrypt');
 
 module.exports = async (req, res) => {
     try{
@@ -8,7 +9,7 @@ module.exports = async (req, res) => {
 
         // Check if the credentials are missing or not
         if (!identifier || !password) {
-            return res.status(400).json(createErrorResponse('Missing credentials'));
+            return res.status(400).json(createErrorResponse(400, 'Missing credentials'));
         }
 
         // Determine if identifier is an email or phone number
@@ -19,12 +20,15 @@ module.exports = async (req, res) => {
             user = await findUserByPhone(identifier);
         }
         if (!user) {
-            return res.status(401).json(createErrorResponse('User not found'));
+            return res.status(401).json(createErrorResponse(401, 'User not found'));
         }
 
         // Verify the password
-        if (password !== user.PASSWORD) {
-            return res.status(401).json(createErrorResponse('Invalid password'));
+        const match = await bcrypt.compare(password, user.PASSWORD)
+
+        // Verify the password
+        if (!match) {
+            return res.status(401).json(createErrorResponse(401, 'Invalid password'));
         }
 
         return res.status(200).json(createSuccessResponse( { message: 'Login Successful'}));
