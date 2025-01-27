@@ -1,6 +1,7 @@
 const { findUserByEmail } = require('../../models/data/findUserbyEmail.js');
 const { findUserByPhone } = require('../../models/data/findUserByPhone.js');
 const { createSuccessResponse, createErrorResponse } = require('../../response')
+const bcrypt = require('bcrypt');
 
 module.exports = async (req, res) => {
     try{
@@ -23,7 +24,10 @@ module.exports = async (req, res) => {
         }
 
         // Verify the password
-        if (password !== user.PASSWORD) {
+        const match = await bcrypt.compare(password, user.PASSWORD)
+
+        // Verify the password
+        if (!match) {
             return res.status(401).json(createErrorResponse(401, 'Invalid password'));
         }
 
