@@ -34,6 +34,8 @@ app.use(express.json());
 // passport.use(authenticate.strategy());
 // app.use(passport.initialize());
 
+app.use(express.json());  // Middleware to parse JSON bodies
+
 app.use('/', require('./routes'));
 app.use("/auth", authRoutes); ///
 

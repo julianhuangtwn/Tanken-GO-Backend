@@ -1,2 +1,0 @@
-// src/auth/index.js
-
