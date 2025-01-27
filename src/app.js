@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
+const authRoutes = require("../src/auth/register"); ////
 // const passport = require('passport');
 // const authenticate = require('./auth');
 
@@ -16,7 +17,7 @@ const pino = require('pino-http')({
 
 // Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();
-
+app.use(cors({ origin: "http://localhost:3000" }));////
 // Use pino logging middleware
 app.use(pino);
 
@@ -28,7 +29,7 @@ app.use(cors());
 
 // Reduces the size of the response, speeding up the load time for clients and reducing the bandwidth
 app.use(compression());
-
+app.use(express.json());
 // // Set up our passport authentication middleware
 // passport.use(authenticate.strategy());
 // app.use(passport.initialize());
@@ -36,6 +37,7 @@ app.use(compression());
 app.use(express.json());  // Middleware to parse JSON bodies
 
 app.use('/', require('./routes'));
+app.use("/auth", authRoutes); ///
 
 // Add 404 middleware to handle any requests for resources that can't be found
 app.use((req, res) => {
