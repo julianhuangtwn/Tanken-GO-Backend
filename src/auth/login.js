@@ -1,6 +1,6 @@
-const { findUserByEmail } = require('../../models/data/findUserbyEmail.js');
-const { findUserByPhone } = require('../../models/data/findUserByPhone.js');
-const { createSuccessResponse, createErrorResponse } = require('../../response')
+const { findUserByEmail } = require('../models/data/findUserbyEmail.js');
+const { findUserByPhone } = require('../models/data/findUserByPhone.js');
+const { createSuccessResponse, createErrorResponse } = require('../response.js')
 const bcrypt = require('bcrypt');
 
 module.exports = async (req, res) => {

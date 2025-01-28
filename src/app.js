@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
-const authRoutes = require("../src/auth/register"); ////
+const authRoutes = require("../src/auth/register"); 
 // const passport = require('passport');
 // const authenticate = require('./auth');
 
@@ -17,7 +17,7 @@ const pino = require('pino-http')({
 
 // Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();
-app.use(cors({ origin: "http://localhost:3000" }));////
+app.use(cors({ origin: "http://localhost:3000" }));
 // Use pino logging middleware
 app.use(pino);
 
