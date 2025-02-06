@@ -1,9 +1,8 @@
 const { User } = require('../models/user.js');
 const { createSuccessResponse, createErrorResponse } = require('../response.js')
-const bcrypt = require('bcrypt');
 
-// const { secretOrKey } = require('../config/auth.js');
-// const jwt = require('jsonwebtoken');
+const { secretOrKey } = require('../config/auth.js');
+const jwt = require('jsonwebtoken');
 
 
 module.exports = async (req, res) => {
@@ -23,14 +22,20 @@ module.exports = async (req, res) => {
         }
 
         // Verify the password
-        const match = await bcrypt.compare(password, user.PASSWORD)
-
-        // Verify the password
+        let match = await User.validatePassword(password, user.PASSWORD);
         if (!match) {
             return res.status(401).json(createErrorResponse(401, 'Invalid password'));
         }
 
-        return res.status(200).json(createSuccessResponse( { message: 'Login Successful'}));
+        let payload = {
+            id: user.USERID,
+            email: user.EMAIL,
+            phone: user.PHONE_NUMBER,
+            fullName: user.FIRST_NAME + ' ' + user.LAST_NAME,
+        }
+        let token = jwt.sign(payload, secretOrKey);
+
+        return res.status(200).json(createSuccessResponse( { message: 'Login Successful', token: token}));
     } catch(err) {
         return res.status(500).json(createErrorResponse(500, err.message));
     }

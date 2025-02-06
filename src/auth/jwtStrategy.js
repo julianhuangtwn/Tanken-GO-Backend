@@ -19,7 +19,12 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
     // Here we can validate the token and look up the user if necessary
     logger.info('JWT payload received: ', jwt_payload);
     if (jwt_payload) {
-        next(null, jwt_payload);
+        next(null,  {
+            id: jwt_payload.id,
+            email: jwt_payload.email,
+            phone: jwt_payload.phone,
+            fullName: jwt_payload.fullName,
+        });
     } else {
         next(null, false);
     }

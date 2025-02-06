@@ -1,4 +1,5 @@
 const { getUserByIdentifier } = require('./data/user-service');
+const bcrypt = require('bcrypt');
 
 class User {
     /**
@@ -16,6 +17,16 @@ class User {
         }
     }
 
+    /**
+     * Check if a user password is correct
+     * @param {string} password - The password to check
+     * @param {string} userPassword - The user's password
+     * @returns {boolean} - True if the password is correct, false otherwise
+     */
+    static async validatePassword (password, userPassword) {
+        return bcrypt.compare(password, userPassword)
+    }
+
 }
 
-module.exports = User;
+module.exports = { User };
