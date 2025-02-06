@@ -1,7 +1,10 @@
-const { findUserByEmail } = require('../models/data/findUserbyEmail.js');
-const { findUserByPhone } = require('../models/data/findUserByPhone.js');
+const { User } = require('../models/user.js');
 const { createSuccessResponse, createErrorResponse } = require('../response.js')
 const bcrypt = require('bcrypt');
+
+// const { secretOrKey } = require('../config/auth.js');
+// const jwt = require('jsonwebtoken');
+
 
 module.exports = async (req, res) => {
     try{
@@ -14,11 +17,7 @@ module.exports = async (req, res) => {
 
         // Determine if identifier is an email or phone number
         let user;
-        if (identifier.includes('@')) {
-            user = await findUserByEmail(identifier);
-        } else {
-            user = await findUserByPhone(identifier);
-        }
+        user = await User.findByIdentifier(identifier);
         if (!user) {
             return res.status(401).json(createErrorResponse(401, 'User not found'));
         }
