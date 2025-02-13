@@ -22,7 +22,7 @@ async function imageGen(req, res) {
         return res.status(404).json({ error: "No images found" });
       }
   
-      return { imageUrl: data.results[0].urls.raw + "&w=500&h=300" };
+      return { imageUrl: data.results[0].urls.raw + "&w=300&h=200" };
     } catch (error) {
       console.error("Error fetching image:", error);
       res.status(500).json({ error: "Failed to fetch image" });
