@@ -6,6 +6,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/users', require('./get'));
-router.post('/ai', require('./ai'))
+router.post('/ai', require('./ai'));
+router.get('/image', require('./image'));
 
 module.exports = router;
