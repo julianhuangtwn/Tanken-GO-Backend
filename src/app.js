@@ -17,7 +17,7 @@ const pino = require('pino-http')({
 
 // Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "https://tanken-go-frontend.vercel.app" }));
 // Use pino logging middleware
 app.use(pino);
 
