@@ -18,8 +18,7 @@ async function addComment(userId, tripId, content, rating) {
     `;
     const existingRating = await connection.execute(checkExistingRatingQuery, [userId, tripId]);
 
-    const isExistingRating = existingRating.rows[0][0] > 0;
-    if (isExistingRating) {
+    if (existingRating.rows[0][0] > 0) {
         throw new Error("You have already rated this trip.");
     }
 

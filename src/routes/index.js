@@ -13,7 +13,6 @@ const { hostname } = require('os');
 const router = express.Router();
 router.use("/auth", require("../auth/register"));
 router.use('/auth', require('../auth/login'));
-router.use("/api/comments", require("./api/commetns")); 
 router.use("/api/auth", require("./api/auth"));
 
 /**
