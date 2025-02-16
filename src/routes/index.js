@@ -8,6 +8,7 @@ const { version } = require('../../package.json');
 const { createSuccessResponse } = require('../response');
 
 const { hostname } = require('os');
+const passport = require('passport');
 
 // Create a router that we can use to mount our API
 const router = express.Router();
@@ -18,8 +19,8 @@ router.use("/api/auth", require("./api/auth"));
 /**
  * Expose all of our API routes on /v1/* to include an API version.
  */
-// router.use(`/v1`, authenticate(), require('./api'));
-router.use(`/v1`, require('./api'));
+// session: false. This is because we require credentials to be supplied with each request, rather than set up a session.
+router.use(`/v1`, passport.authenticate('jwt', { session: false }), require('./api'));
 
 
 /**
