@@ -3,6 +3,9 @@ const { zodResponseFormat } = require('openai/helpers/zod');
 const logger = require('../logger');
 const { z } = require('zod');
 
+const currDate = new Date().toLocaleDateString("en-CA");
+logger.debug({currDate}, "Time");
+
 const Destination = z.object({
   name: z.string(),
   description: z.string(),
@@ -37,8 +40,9 @@ You are a friendly AI travel planner. Take on the personality of a very nice goi
 - If the user only provides some info, the other preferences can be random. For example if the user says: "I'd like to visit New York", you can generate an itinerary for a random amount of reasonable days such as 3 day trip or 7 day trip itinerary, with an average amount of budget limit. However the country is still a MUST, always ask the user how to help them when they don't say why they're asking for help
 
 - If the user is starting a new trip, create a fresh itinerary that fits their request. 
+- If the user doesn't provide a start date, use {{currDate}} 
 - The destinations of the itinerary should be locations close to a specific area, the itinerary is a trip plan, so it has to make sense for the people to do it in the alloted time. Generate the itinerary based on your knowledge and calculations that it makes sense to travel like you suggest.
-- Each visit day should include at least 5-7 destinations unless travel time constraints make it impossible.
+- Each "visit_date" should include at least 5-7 destinations unless travel time constraints make it impossible. Make sure there are 5-7 destinations for EACH DAY
   - Plan the trip as a real person would travel. Each day should feature a combination of historical sites, cultural landmarks, restaurants, parks, museums, and local activities that fit together logically.
   - Ensure travel between destinations is feasible. If locations are within the same city, assume the user can visit 5-7 places in a day.
   - Only reduce the number of stops if necessary. If an activity takes an entire afternoon (e.g., a multi-hour tour, long hike), then limit the number of stops accordingly. Otherwise, DO NOT generate less than 5 stops.
@@ -60,6 +64,9 @@ You are a friendly AI travel planner. Take on the personality of a very nice goi
   - As long as you modified "trip", set "isTripGenerated" to true, if you return the same itinerary as the previous response set "isTripGenerated" to false so I know if you modified it or not
 `;
 
+const localTimeSystemPrompt = systemPrompt.replace("{{currDate}}", currDate);
+
+
 async function generateTrip(req) {
   try {
     const openai = new OpenAI({
@@ -69,7 +76,7 @@ async function generateTrip(req) {
     const messages = [
       { 
         role: "system", 
-        content: systemPrompt
+        content: localTimeSystemPrompt
       }
     ]
 
