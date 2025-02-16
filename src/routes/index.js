@@ -14,6 +14,8 @@ const passport = require('passport');
 const router = express.Router();
 router.use("/auth", require("../auth/register"));
 router.use('/auth', require('../auth/login'));
+router.use("/api/auth", require("./api/auth"));
+
 /**
  * Expose all of our API routes on /v1/* to include an API version.
  */

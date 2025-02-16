@@ -3,32 +3,31 @@ const { createSuccessResponse, createErrorResponse } = require('../response.js')
 
 const { secretOrKey } = require('../config/auth.js');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 
 module.exports = async (req, res) => {
-    try{
+    try {
         const { identifier, password } = req.body;
 
-        // Check if the credentials are missing or not
         if (!identifier || !password) {
-            return res.status(400).json(createErrorResponse(400, 'Missing credentials'));
+            return res.status(400).json(createErrorResponse(400, "Missing credentials"));
         }
 
-        // Determine if identifier is an email or phone number
         let user;
         user = await User.findByIdentifier(identifier);
         if (!user) {
-            return res.status(401).json(createErrorResponse(401, 'User not found'));
+            return res.status(401).json(createErrorResponse(401, "User not found"));
         }
 
         // Verify the password
         let match = await User.validatePassword(password, user.PASSWORD);
         if (!match) {
-            return res.status(401).json(createErrorResponse(401, 'Invalid password'));
+            return res.status(401).json(createErrorResponse(401, "Invalid password"));
         }
 
         let payload = {
-            id: user.USERID,
+            userid: user.USERID,
             email: user.EMAIL,
             phone: user.PHONE_NUMBER,
             fullName: user.FIRST_NAME + ' ' + user.LAST_NAME,
@@ -39,4 +38,4 @@ module.exports = async (req, res) => {
     } catch(err) {
         return res.status(500).json(createErrorResponse(500, err.message));
     }
-}   
+};
