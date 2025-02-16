@@ -2,7 +2,7 @@ const { connectToDB } = require('.');
 
 /**
  * Find a single user row by email
- * @param {string} email - The email to search for
+ * @param {string} email - The email to search for 
  * @returns {Object|null} - Returns the user object if found, or null if not found
  */
 
