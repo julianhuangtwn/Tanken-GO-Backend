@@ -3,9 +3,11 @@ const { zodResponseFormat } = require('openai/helpers/zod');
 const logger = require('../logger');
 const { z } = require('zod');
 
+// Gets user's local time
 const currDate = new Date().toLocaleDateString("en-CA");
 logger.debug({currDate}, "Time");
 
+// Schemas to enforce AI Model's return type
 const Destination = z.object({
   name: z.string(),
   description: z.string(),
@@ -64,6 +66,7 @@ You are a friendly AI travel planner. Take on the personality of a very nice goi
   - As long as you modified "trip", set "isTripGenerated" to true, if you return the same itinerary as the previous response set "isTripGenerated" to false so I know if you modified it or not
 `;
 
+// Dynamically replaces a prompt with a variable
 const localTimeSystemPrompt = systemPrompt.replace("{{currDate}}", currDate);
 
 
@@ -73,6 +76,7 @@ async function generateTrip(req) {
       apiKey: process.env.OPENAI_API_KEY,
     });
   
+    // Messages to send to the AI model, first is the Trip Planner Prompt
     const messages = [
       { 
         role: "system", 
@@ -80,16 +84,20 @@ async function generateTrip(req) {
       }
     ]
 
+    // Frontend sends previous messages and current user prompt in body
+    // Add this to messages
     messages.push(...req.body.messages);
     
     logger.debug({messages}, "Messages");
+
+    // Send the previous and current messages to the model
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: messages,
+      // This makes sure the model responds a TripResponse JSON format
       response_format: zodResponseFormat(TripResponse, "trip_response")
     });
   
-    //logger.debug(completion.choices[0].message.parsed);
     logger.debug(completion.choices[0].message.content)
   
     return JSON.parse(completion.choices[0].message.content);
