@@ -17,15 +17,19 @@ const pino = require('pino-http')({
 
 // Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();
-app.use(cors({ origin: "https://tanken-go-frontend.vercel.app" })); 
+
+// Use CORS middleware so we can make requests across origins
+app.use(cors({ 
+  origin: [
+  "https://tanken-go-frontend.vercel.app", 
+  "http://localhost:3000"] 
+}));
+
 // Use pino logging middleware
 app.use(pino);
 
 // Helps secure Express applications by setting various HTTP headers that protect against common web vulnerabilities
 app.use(helmet());
-
-// Use CORS middleware so we can make requests across origins
-app.use(cors());
 
 // Reduces the size of the response, speeding up the load time for clients and reducing the bandwidth
 app.use(compression());
