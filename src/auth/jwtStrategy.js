@@ -17,10 +17,11 @@ let jwtOptions = {
 let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
     // This function is called whenever a JWT is presented to the server
     // Here we can validate the token and look up the user if necessary
-    logger.info('JWT payload received: ', jwt_payload);
+    logger.info('JWT payload received: ');
+    logger.info(jwt_payload);
     if (jwt_payload) {
         next(null,  {
-            id: jwt_payload.id,
+            userId: jwt_payload.userId,
             email: jwt_payload.email,
             phone: jwt_payload.phone,
             fullName: jwt_payload.fullName,

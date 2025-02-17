@@ -4,6 +4,7 @@ const express = require('express');
 
 const authenticate = require("../../auth/authenticate");
 const commentsController = require("./commentsController");
+const tripController = require("./tripController");
 
 const router = express.Router();
 
@@ -14,5 +15,11 @@ router.delete("/comments/:commentId", authenticate, commentsController.deleteCom
 
 router.get('/users', require('./get'));
 router.post('/ai', require('./ai'))
+
+// Trip routes
+router.get('/trip/:tripId', tripController.getTrip);
+router.post('/trip', tripController.createTrip);
+router.put('/trip/:tripId', tripController.updateTrip);
+router.delete('/trip/:tripId', tripController.deleteTrip);
 
 module.exports = router;
