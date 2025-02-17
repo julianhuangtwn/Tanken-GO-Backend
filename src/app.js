@@ -3,8 +3,9 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const authRoutes = require("../src/auth/register"); 
-// const passport = require('passport');
-// const authenticate = require('./auth');
+
+const passport = require('passport');
+const jwtStrategy = require('./auth/jwtStrategy');
 
 const { createErrorResponse } = require('./response');
 
@@ -28,18 +29,16 @@ app.use(pino);
 // Helps secure Express applications by setting various HTTP headers that protect against common web vulnerabilities
 app.use(helmet());
 
-
 // Reduces the size of the response, speeding up the load time for clients and reducing the bandwidth
 app.use(compression());
-app.use(express.json());
-// // Set up our passport authentication middleware
-// passport.use(authenticate.strategy());
-// app.use(passport.initialize());
-
 app.use(express.json());  // Middleware to parse JSON bodies
 
 app.use('/', require('./routes'));
-app.use("/auth", authRoutes); ///
+app.use("/auth", authRoutes); 
+
+// // Set up our passport authentication middleware
+passport.use(jwtStrategy); 
+app.use(passport.initialize());
 
 // Add 404 middleware to handle any requests for resources that can't be found
 app.use((req, res) => {

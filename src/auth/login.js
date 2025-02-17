@@ -1,9 +1,10 @@
-const { findUserByEmail } = require('../models/data/findUserByEmail');
-const { findUserByPhone } = require('../models/data/findUserByPhone');
-const { createSuccessResponse, createErrorResponse } = require('../response');
-const bcrypt = require('bcrypt');
+const { User } = require('../models/user.js');
+const { createSuccessResponse, createErrorResponse } = require('../response.js')
+
+const { secretOrKey } = require('../config/auth.js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+
 
 module.exports = async (req, res) => {
     try {
@@ -14,28 +15,27 @@ module.exports = async (req, res) => {
         }
 
         let user;
-        if (identifier.includes("@")) {
-            user = await findUserByEmail(identifier);
-        } else {
-            user = await findUserByPhone(identifier);
-        }
-
+        user = await User.findByIdentifier(identifier);
         if (!user) {
             return res.status(401).json(createErrorResponse(401, "User not found"));
         }
 
-        const match = await bcrypt.compare(password, user.PASSWORD);
-
+        // Verify the password
+        let match = await User.validatePassword(password, user.PASSWORD);
         if (!match) {
             return res.status(401).json(createErrorResponse(401, "Invalid password"));
         }
 
-        //JWT Token generation
-        const token = jwt.sign({ USERID: user.USERID, email: user.EMAIL }, process.env.JWT_SECRET, { expiresIn: "120s" });
+        let payload = {
+            userid: user.USERID,
+            email: user.EMAIL,
+            phone: user.PHONE_NUMBER,
+            fullName: user.FIRST_NAME + ' ' + user.LAST_NAME,
+        }
+        let token = jwt.sign(payload, secretOrKey);
 
-        return res.status(200).json(createSuccessResponse({ message: "Login Successful", token }));
-    } catch (err) {
-        console.error("Login error:", err);
-        return res.status(500).json(createErrorResponse(500, "Internal Server Error"));
+        return res.status(200).json(createSuccessResponse( { message: 'Login Successful', token: token}));
+    } catch(err) {
+        return res.status(500).json(createErrorResponse(500, err.message));
     }
 };
