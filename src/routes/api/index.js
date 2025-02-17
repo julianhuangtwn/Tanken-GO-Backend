@@ -18,6 +18,7 @@ router.post('/ai', require('./ai'))
 
 // Trip routes
 router.get('/trip/:tripId', tripController.getTrip);
+router.get('/trip', tripController.getTripsByUser);
 router.post('/trip', tripController.createTrip);
 router.put('/trip/:tripId', tripController.updateTrip);
 router.delete('/trip/:tripId', tripController.deleteTrip);

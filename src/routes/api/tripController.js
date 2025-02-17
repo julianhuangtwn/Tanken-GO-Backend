@@ -32,7 +32,7 @@ exports.createTrip = async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: "Unauthorized: User not found" });
         }
-        const userId = user.userid;
+        const userId = user.userId;
 
         // Extract trip details from the request body.
         const { tripName, startDate, endDate, totalCostEstimate, isPublic } = req.body;
@@ -55,7 +55,7 @@ exports.updateTrip = async (req, res) => {
             return res.status(404).json({ error: "Trip not found" });
         }
         // Optionally enforce that only the owner can update the trip.
-        if (trip.userId !== req.user.USERID) {
+        if (trip.USERID !== req.user.userId) {
             return res.status(403).json({ error: "Unauthorized: Cannot update another user's trip" });
         }
         const updateResult = await trip.update(req.body);
@@ -73,12 +73,40 @@ exports.deleteTrip = async (req, res) => {
             return res.status(404).json({ error: "Trip not found" });
         }
         // Optionally enforce that only the owner can delete the trip.
-        if (trip.USERID !== req.user.userid) {
+        if (trip.USERID !== req.user.userId) {
             return res.status(403).json({ error: "Unauthorized: Cannot delete another user's trip" });
         }
         const deleteResult = await Trip.delete(tripId);
         res.status(201).json({ message: "Trip deleted successfully", deleteResult });
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+};
+
+exports.getTripsByUser = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        logger.info(`Authenticated User!:`);
+        logger.info(userId);
+
+        
+        if (!userId) {
+            return res.status(401).json({ error: "Unauthorized: User not found" });
+        }
+        logger.info(`Fetching trips for user ID ${userId}`);
+        const trips = await Trip.getAllByUser(userId);
+        res.json({
+            trips: trips.map(trip => ({
+                tripId: trip.TRIPID,
+                userId: trip.USERID,
+                tripName: trip.TRIPNAME,
+                startDate: trip.STARTDATE,
+                endDate: trip.ENDDATE,
+                totalCostEstimate: trip.TOTALCOSTESTIMATE,
+                isPublic: trip.ISPUBLIC,
+            })),
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };

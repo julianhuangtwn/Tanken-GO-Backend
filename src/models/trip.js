@@ -1,4 +1,4 @@
-const { getTripById, createTrip, updateTrip, deleteTrip } = require('./data/trip-service');
+const { getTripById, createTrip, updateTrip, deleteTrip, getTripsByUser } = require('./data/trip-service');
 const logger = require('../logger');
 
 class Trip {
@@ -59,8 +59,6 @@ class Trip {
     }
 
 
-
-
     /**
      * Finds a trip by its TRIPID.
      * @param {number} tripId - The unique identifier of the trip.
@@ -76,8 +74,20 @@ class Trip {
         }
     }
 
-    // Additional methods such as create, update, or delete could be implemented similarly
-    // to further wrap the corresponding trip-service functions.
+    /**
+     * Finds all trips for a user.
+     * @param {number} userId - The unique identifier of the user.
+     * @returns {Promise<Array>} - An array of trip objects.
+     */
+    static async getAllByUser(userId) {
+        try {
+            const tripData = await getTripsByUser(userId);
+            return tripData;
+        } catch (err) {
+            logger.error('Error fetching trips by user ID:', err);
+            throw err;
+        }
+    }
 }
 
 module.exports = { Trip };

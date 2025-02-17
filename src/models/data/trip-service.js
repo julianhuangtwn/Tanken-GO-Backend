@@ -94,7 +94,7 @@ async function deleteTrip(tripId) {
         `DELETE FROM admin.Trip
          WHERE TRIPID = :tripId`,
         { tripId },
-        { autoCommit: false }
+        { autoCommit: true }
       );
 
       if (result.rowsAffected === 0) {
@@ -128,4 +128,24 @@ async function getTripById(tripId) {
     }
 }
 
-module.exports = { createTrip, updateTrip, deleteTrip, getTripById };
+async function getTripsByUser(userId) {
+    try {
+        const connection = await connectToDB();
+        const result = await connection.execute(
+            `SELECT TRIPID, USERID, TRIPNAME, 
+                TO_CHAR(STARTDATE, 'YYYY-MM-DD') AS STARTDATE, 
+                TO_CHAR(ENDDATE, 'YYYY-MM-DD') AS ENDDATE, 
+                TOTALCOSTESTIMATE, ISPUBLIC
+            FROM admin.Trip
+            WHERE USERID = :userId`,
+            { userId },
+            { outFormat: require('oracledb').OUT_FORMAT_OBJECT }
+        );
+        return result.rows.length > 0 ? result.rows : null;
+    } catch (err) {
+        logger.error('Error fetching trips by user:', err);
+        throw err;
+    }
+}
+
+module.exports = { createTrip, updateTrip, deleteTrip, getTripById, getTripsByUser };
