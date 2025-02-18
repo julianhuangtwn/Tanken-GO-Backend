@@ -1,6 +1,7 @@
 const express = require("express");
-const authenticate = require("../../auth/authenticate"); //user is authenticated
-const User = require("../../models/user"); //user model
+const authenticate = require("../../auth/authenticate"); //user is authenticated\
+const { User } = require("../../models/user"); //user model
+const logger = require("../../logger");
 
 const router = express.Router();
 
@@ -12,6 +13,9 @@ router.get("/me", authenticate, async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
+
+        logger.info(`Authenticated user in auth:`);
+        logger.info(user);
 
         res.json({
             userId: user.USERID,
