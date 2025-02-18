@@ -3,6 +3,7 @@ const logger = require('../logger');
 const passportJWT = require('passport-jwt');
 const { secretOrKey } = require('../config/auth');
 
+
 // JSON Web Token strategy
 let JwtStrategy = passportJWT.Strategy;
 let ExtractJwt = passportJWT.ExtractJwt;

@@ -20,8 +20,10 @@ router.use("/api/auth", require("./api/auth"));
  * Expose all of our API routes on /v1/* to include an API version.
  */
 // session: false. This is because we require credentials to be supplied with each request, rather than set up a session.
-router.use(`/v1`, passport.authenticate('jwt', { session: false }), require('./api'));
-
+// !!! Commented for now !!!
+//router.use(`/v1`, passport.authenticate('jwt', { session: false }), require('./api'));
+// !!! Changed to : 
+router.use(`/v1`, require('./api'));
 
 /**
  * Define a simple health check route. If the server is running
