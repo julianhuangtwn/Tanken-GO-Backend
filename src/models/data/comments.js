@@ -84,6 +84,8 @@ async function updateComment(commentId, userId, newContent, newRating) {
         WHERE COMMENTID = :3 AND USERID = :4
     `;
 
+    
+
     const result = await connection.execute(updateQuery, [newContent, newRating, commentId, userId], { autoCommit: true });
 
     if (result.rowsAffected === 0) {
