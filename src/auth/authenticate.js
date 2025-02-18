@@ -1,4 +1,7 @@
 const jwt = require("jsonwebtoken");
+const logger = require("../logger");
+const { secretOrKey } = require("../config/auth");
+
 
 module.exports = (req, res, next) => {
     const token = req.header("Authorization");
@@ -9,13 +12,15 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        console.log("Received Token:", token);  
-        const verified = jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
-        console.log("Token Verified:", verified); 
+        logger.info("Received Token:");
+        logger.info(token);  
+        const verified = jwt.verify(token.replace("Bearer ", ""), secretOrKey);
+        logger.info("Token Verified:");
+        logger.info(verified); 
         req.user = verified;
         next();
     } catch (error) {
-        console.error("Invalid Token:", error.message);
+        logger.error("Invalid Token:", error.message);
         res.status(400).json({ message: "Invalid Token" });
     }
 };

@@ -4,6 +4,7 @@ const express = require('express');
 
 const authenticate = require("../../auth/authenticate");
 const commentsController = require("./commentsController");
+const tripController = require("./tripController");
 
 const router = express.Router();
 
@@ -19,5 +20,12 @@ router.get('/image', require('./image'));
 // Route for fetching public trips
 router.get('/trips/public', require('./publicTrips.js'));
 router.get('/trips/public/:tripId', require('./tripDetails.js'));
+
+// Trip routes
+router.get('/trip/:tripId', tripController.getTrip);
+router.get('/trip', tripController.getTripsByUser);
+router.post('/trip', tripController.createTrip);
+router.put('/trip/:tripId', tripController.updateTrip);
+router.delete('/trip/:tripId', tripController.deleteTrip);
 
 module.exports = router;
