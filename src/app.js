@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const authRoutes = require("../src/auth/register"); 
+const apiRoutes = require('./routes/api/index');
 
 const passport = require('passport');
 const jwtStrategy = require('./auth/jwtStrategy');
@@ -32,10 +33,9 @@ app.use(helmet());
 // Reduces the size of the response, speeding up the load time for clients and reducing the bandwidth
 app.use(compression());
 app.use(express.json());  // Middleware to parse JSON bodies
-
 app.use('/', require('./routes'));
 app.use("/auth", authRoutes); 
-
+app.use('/api', apiRoutes);
 // // Set up our passport authentication middleware
 passport.use(jwtStrategy); 
 app.use(passport.initialize());

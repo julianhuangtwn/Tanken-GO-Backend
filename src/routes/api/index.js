@@ -15,4 +15,8 @@ router.delete("/comments/:commentId", authenticate, commentsController.deleteCom
 router.get('/users', require('./get'));
 router.post('/ai', require('./ai'))
 
+// Route for fetching public trips
+router.get('/trips/public', require('./publicTrips.js'));
+router.get('/trips/public/:tripId', require('./tripDetails.js'));
+
 module.exports = router;
