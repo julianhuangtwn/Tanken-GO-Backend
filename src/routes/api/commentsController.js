@@ -1,5 +1,7 @@
 const { addComment, getComments, updateComment, deleteComment } = require("../../models/data/comments");
 
+const logger = require("../../logger");
+
 exports.getComments = async (req, res) => {
     try {
         const comments = await getComments(req.params.tripId);
@@ -12,7 +14,9 @@ exports.getComments = async (req, res) => {
 exports.addComment = async (req, res) => {
     try {
         const { tripId, content, rating } = req.body;
-        const userId = req.user.USERID;
+        const userId = req.user.userid;
+
+        logger.info(`****** ${tripId} ****** ${content} ***** ${rating} ***** ${userId}` );
 
         if (!userId) {
             return res.status(401).json({ error: "Unauthorized: User not found" });
