@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
         }
 
         let payload = {
-            userId: user.USERID,
+            userid: user.USERID,
             email: user.EMAIL,
             phone: user.PHONE_NUMBER,
             fullName: user.FIRST_NAME + ' ' + user.LAST_NAME,

@@ -22,7 +22,7 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
     logger.info(jwt_payload);
     if (jwt_payload) {
         next(null,  {
-            userId: jwt_payload.userId,
+            userid: jwt_payload.userid,
             email: jwt_payload.email,
             phone: jwt_payload.phone,
             fullName: jwt_payload.fullName,

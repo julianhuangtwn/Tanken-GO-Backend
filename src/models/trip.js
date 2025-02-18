@@ -2,9 +2,9 @@ const { getTripById, createTrip, updateTrip, deleteTrip, getTripsByUser } = requ
 const logger = require('../logger');
 
 class Trip {
-    constructor({ tripId, userId, tripName, startDate, endDate, totalCostEstimate, isPublic }) {
+    constructor({ tripId, userid, tripName, startDate, endDate, totalCostEstimate, isPublic }) {
         this.tripId = tripId;
-        this.userId = userId;
+        this.userid = userid;
         this.tripName = tripName;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -76,12 +76,12 @@ class Trip {
 
     /**
      * Finds all trips for a user.
-     * @param {number} userId - The unique identifier of the user.
+     * @param {number} userid - The unique identifier of the user.
      * @returns {Promise<Array>} - An array of trip objects.
      */
-    static async getAllByUser(userId) {
+    static async getAllByUser(userid) {
         try {
-            const tripData = await getTripsByUser(userId);
+            const tripData = await getTripsByUser(userid);
             return tripData;
         } catch (err) {
             logger.error('Error fetching trips by user ID:', err);

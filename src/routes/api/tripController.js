@@ -10,7 +10,7 @@ exports.getTrip = async (req, res) => {
         }
         res.json({
             tripId: trip.TRIPID,
-            userId: trip.USERID,
+            userid: trip.USERID,
             tripName: trip.TRIPNAME,
             startDate: trip.STARTDATE,
             endDate: trip.ENDDATE,
@@ -32,11 +32,11 @@ exports.createTrip = async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: "Unauthorized: User not found" });
         }
-        const userId = user.userId;
+        const userid = user.userid;
 
         // Extract trip details from the request body.
         const { tripName, startDate, endDate, totalCostEstimate, isPublic } = req.body;
-        const tripData = { userId: userId, tripName, startDate, endDate, totalCostEstimate, isPublic };
+        const tripData = { userid, tripName, startDate, endDate, totalCostEstimate, isPublic };
 
         logger.info(`Creating trip with data:`);
         logger.info(tripData);
@@ -55,7 +55,7 @@ exports.updateTrip = async (req, res) => {
             return res.status(404).json({ error: "Trip not found" });
         }
         // Optionally enforce that only the owner can update the trip.
-        if (trip.USERID !== req.user.userId) {
+        if (trip.USERID !== req.user.userid) {
             return res.status(403).json({ error: "Unauthorized: Cannot update another user's trip" });
         }
         const updateResult = await trip.update(req.body);
@@ -73,7 +73,7 @@ exports.deleteTrip = async (req, res) => {
             return res.status(404).json({ error: "Trip not found" });
         }
         // Optionally enforce that only the owner can delete the trip.
-        if (trip.USERID !== req.user.userId) {
+        if (trip.USERID !== req.user.userid) {
             return res.status(403).json({ error: "Unauthorized: Cannot delete another user's trip" });
         }
         const deleteResult = await Trip.delete(tripId);
@@ -85,20 +85,26 @@ exports.deleteTrip = async (req, res) => {
 
 exports.getTripsByUser = async (req, res) => {
     try {
-        const userId = req.user.userId;
+        logger.info(`Authenticated user in getTripsByUser:`);
+        logger.info(req.user);
+        const
+            userid = req.user.userid;
         logger.info(`Authenticated User!:`);
-        logger.info(userId);
+        logger.info(userid);
 
         
-        if (!userId) {
+        if (!userid) {
             return res.status(401).json({ error: "Unauthorized: User not found" });
         }
-        logger.info(`Fetching trips for user ID ${userId}`);
-        const trips = await Trip.getAllByUser(userId);
+        logger.info(`Fetching trips for user ID ${userid}`);
+        const trips = await Trip.getAllByUser(userid);
+        if (!trips || trips.length === 0) {
+            return res.json({ trips: [] });
+        }
         res.json({
             trips: trips.map(trip => ({
                 tripId: trip.TRIPID,
-                userId: trip.USERID,
+                userid: trip.USERID,
                 tripName: trip.TRIPNAME,
                 startDate: trip.STARTDATE,
                 endDate: trip.ENDDATE,

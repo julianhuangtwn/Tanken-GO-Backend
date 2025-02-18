@@ -6,7 +6,7 @@ async function createTrip(tripData) {
     try {
         const connection = await connectToDB();
         const {
-            userId,
+            userid,
             tripName,
             startDate,
             endDate,
@@ -26,11 +26,11 @@ async function createTrip(tripData) {
 
         const result = await connection.execute(
             `INSERT INTO admin.Trip (TRIPID, USERID, TRIPNAME, STARTDATE, ENDDATE, TOTALCOSTESTIMATE, ISPUBLIC)
-             VALUES (:tripId, :userId, :tripName, TO_DATE(:startDate, 'YYYY-MM-DD'),
+             VALUES (:tripId, :userid, :tripName, TO_DATE(:startDate, 'YYYY-MM-DD'),
                      TO_DATE(:endDate, 'YYYY-MM-DD'), :totalCostEstimate, :isPublic)`,
             {
                 tripId: newTripId,
-                userId,
+                userid,
                 tripName,
                 startDate,
                 endDate,
@@ -128,7 +128,7 @@ async function getTripById(tripId) {
     }
 }
 
-async function getTripsByUser(userId) {
+async function getTripsByUser(userid) {
     try {
         const connection = await connectToDB();
         const result = await connection.execute(
@@ -137,8 +137,8 @@ async function getTripsByUser(userId) {
                 TO_CHAR(ENDDATE, 'YYYY-MM-DD') AS ENDDATE, 
                 TOTALCOSTESTIMATE, ISPUBLIC
             FROM admin.Trip
-            WHERE USERID = :userId`,
-            { userId },
+            WHERE USERID = :userid`,
+            { userid },
             { outFormat: require('oracledb').OUT_FORMAT_OBJECT }
         );
         return result.rows.length > 0 ? result.rows : null;

@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const logger = require("../logger");
+const { secretOrKey } = require("../config/auth");
+
 
 module.exports = (req, res, next) => {
     const token = req.header("Authorization");
@@ -10,9 +12,11 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        logger.info("Received Token:", token);  
-        const verified = jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
-        logger.info("Token Verified:", verified); 
+        logger.info("Received Token:");
+        logger.info(token);  
+        const verified = jwt.verify(token.replace("Bearer ", ""), secretOrKey);
+        logger.info("Token Verified:");
+        logger.info(verified); 
         req.user = verified;
         next();
     } catch (error) {
