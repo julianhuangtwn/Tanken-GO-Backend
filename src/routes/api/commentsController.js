@@ -36,7 +36,7 @@ exports.updateComment = async (req, res) => {
     try {
         const { commentId } = req.params;
         const { content, rating } = req.body;
-        const userId = req.user.USERID;
+        const userId = req.user.userid;
 
         if (!content.trim()) {
             return res.status(400).json({ error: "Content cannot be empty" });
@@ -55,7 +55,7 @@ exports.updateComment = async (req, res) => {
 exports.deleteComment = async (req, res) => {
     try {
         const { commentId } = req.params;
-        const userId = req.user.USERID;
+        const userId = req.user.userid;
 
         const result = await deleteComment(commentId, userId);
         res.json(result);
