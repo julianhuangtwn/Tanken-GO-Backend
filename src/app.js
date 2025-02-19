@@ -21,7 +21,7 @@ const pino = require('pino-http')({
 const app = express();
 app.use(cors({ 
   origin: [
-  "https://tanken-go-frontend-test.onrender.com/", 
+  "https://tanken-go-frontend-test.onrender.com", 
   "http://localhost:3000"] 
 }));
 // Use pino logging middleware
