@@ -1,3 +1,4 @@
+/* old file to verify user during the login, used in auth/login */
 const { connectToDB } = require('.');
 
 /**
