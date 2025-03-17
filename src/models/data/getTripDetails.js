@@ -23,45 +23,53 @@ async function getTripDetails(tripId) {
       throw new Error("No trip details found");
     }
 
-    const [tripIdValue, tripName, startDate, endDate, totalCostEstimate, username] = result.rows[0];
-    const destinationsByDay = {};
-    let attractionCount = 0, restaurantCount = 0, hotelCount = 0;
+    // Initialize trip details object
+    const tripDetails = {
+      tripId: result.rows[0][0],
+      tripName: result.rows[0][1],
+      startDate: result.rows[0][2].toISOString().split('T')[0],
+      endDate: result.rows[0][3].toISOString().split('T')[0],
+      totalCostEstimate: result.rows[0][4],
+      username: result.rows[0][5],
+      attractionCount: 0,
+      restaurantCount: 0,
+      hotelCount: 0,
+      destinationsByDay: {}
+    };
 
+    // Process each row in the result
     result.rows.forEach(row => {
-      const [, , , , , , destinationName, city, country, coordinates, category, visitDate] = row;
-      if (category === 'attraction') attractionCount++;
-      if (category === 'restaurant') restaurantCount++;
-      if (category === 'hotel') hotelCount++;
+      const [
+        , , , , , , 
+        destinationName, 
+        city, 
+        country, 
+        coordinates, 
+        category, 
+        visitDate
+      ] = row;
 
-      const dateKey = visitDate?.toISOString().split('T')[0] || 'No Date';
-      if (!destinationsByDay[dateKey]) {
-        destinationsByDay[dateKey] = [];
+      const formattedDate = visitDate.toISOString().split('T')[0];
+
+      // Initialize the date key if it doesn't exist
+      if (!tripDetails.destinationsByDay[formattedDate]) {
+        tripDetails.destinationsByDay[formattedDate] = [];
       }
-      destinationsByDay[dateKey].push({
+
+      // Add destination details to the corresponding date
+      tripDetails.destinationsByDay[formattedDate].push({
         destinationName,
         city,
         country,
         coordinates: coordinates || null,
         category,
-        visitDate: dateKey
+        visitDate: formattedDate
       });
     });
 
-    const tripDetail = {
-      tripId: tripIdValue,
-      tripName,
-      startDate: startDate.toISOString().split('T')[0],
-      endDate: endDate.toISOString().split('T')[0],
-      totalCostEstimate,
-      username,
-      attractionCount,
-      restaurantCount,
-      hotelCount,
-      destinationsByDay,
-    };
+    console.log("Formatted Trip Details:\n", JSON.stringify(tripDetails, null, 2));
+    return { status: "ok", data: [tripDetails] };
 
-    console.log("Formatted Trip Details:\n" + JSON.stringify(tripDetail, null, 2));
-    return { status: "ok", data: [tripDetail] };
   } catch (err) {
     console.error("Error fetching trip details:", err);
     return {
