@@ -35,9 +35,15 @@ exports.createTrip = async (req, res) => {
         const userid = user.userid;
 
         // Extract trip details from the request body.
-        const { tripName, startDate, endDate, totalCostEstimate, isPublic } = req.body;
-        const tripData = { userid, tripName, startDate, endDate, totalCostEstimate, isPublic };
-
+        let { tripName, startDate, endDate, totalCostEstimate, isPublic, destinations } = req.body;
+        
+        // Remove the `id` field from each destination object, because we will create in back end
+        const cleanDestinations = destinations.map(destination => {
+            const newDestination = { ...destination };
+            delete newDestination.id;
+            return newDestination;
+          });
+          const tripData = { userid, tripName, startDate, endDate, totalCostEstimate, isPublic, destinations: cleanDestinations };
         logger.info(`Creating trip with data:`);
         logger.info(tripData);
         const trip = await Trip.create(tripData);
