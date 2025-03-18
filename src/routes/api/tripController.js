@@ -74,6 +74,7 @@ exports.updateTrip = async (req, res) => {
 exports.deleteTrip = async (req, res) => {
     try {
         const { tripId } = req.params;
+        logger.info(`Deleting trip with ID ${tripId}`);
         const trip = await Trip.findById(tripId);
         if (!trip) {
             return res.status(404).json({ error: "Trip not found" });

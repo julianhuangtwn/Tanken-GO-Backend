@@ -160,26 +160,76 @@ async function updateTrip(tripId, tripData) {
     }
 }
 
+// async function deleteTrip(tripId) {
+//     try {
+//       const connection = await connectToDB();
+//       logger.info(`Deleting trip with ID ${tripId}`);
+//       await connection.execute(
+//         `DELETE FROM admin.TRIPDESTINATION
+//         WHERE TRIPID = :tripId`,
+//         { tripId },
+//         { autoCommit: true }
+//       );
+      
+
+//       const result = await connection.execute(
+//         `DELETE FROM admin.TRIP
+//          WHERE TRIPID = :tripId`,
+//         { tripId },
+//         { autoCommit: true }
+//       );
+
+//       if (result.rowsAffected === 0) {
+//         throw new Error('Trip not found.');
+//       }
+
+//       return { tripId, message: "Trip deleted successfully" };
+//     } catch (err) {
+//       logger.error('Error deleting trip:');
+//       logger.error(err);
+//       throw err;
+//     }
+// }
+
 async function deleteTrip(tripId) {
     try {
       const connection = await connectToDB();
+      logger.info(`Deleting trip with ID ${tripId}`);
+  
+      // Step 1: Delete from TRIPDESTINATION table
+      const destinationResult = await connection.execute(
+        `DELETE FROM admin.Tripdestination
+         WHERE TRIPID = :tripId`,
+        { tripId },
+        { autoCommit: true }
+      );
+  
+      // Log how many rows were deleted from TRIPDESTINATION
+      logger.info(`Deleted ${destinationResult.rowsAffected} records from TRIPDESTINATION.`);
+  
+      // Step 2: Delete from TRIP table
       const result = await connection.execute(
         `DELETE FROM admin.Trip
          WHERE TRIPID = :tripId`,
         { tripId },
         { autoCommit: true }
       );
-
+  
+      // Log how many rows were deleted from TRIP
+      logger.info(`Deleted ${result.rowsAffected} records from TRIP.`);
+  
       if (result.rowsAffected === 0) {
-        throw new Error('Trip not found.');
+        throw new Error('Trip not found or already deleted.');
       }
-
+  
       return { tripId, message: "Trip deleted successfully" };
     } catch (err) {
-      logger.error('Error deleting trip:', err);
-      throw err;
+      logger.error('Error deleting trip:');
+      logger.error(err);
+      throw new Error(`Error deleting trip with ID ${tripId}: ${err.message}`);
     }
-}
+  }
+  
 
 async function getTripById(tripId) {
     try {
