@@ -9,7 +9,7 @@ async function getTripDetails(tripId) {
     const result = await connection.execute(
       `SELECT T.TRIPID, T.TRIPNAME, T.STARTDATE, T.ENDDATE, T.TOTALCOSTESTIMATE,
               U.FIRST_NAME || ' ' || U.LAST_NAME AS USERNAME,
-              D.NAME AS DESTINATION_NAME, D.CITY, D.COUNTRY, D.COORDINATES, D.CATEGORY, D.VISIT_DATE
+              D.NAME AS DESTINATION_NAME, DBMS_LOB.SUBSTR(D.DESCRIPTION, 4000, 1) AS DESCRIPTION, D.CITY, D.COUNTRY, D.COORDINATES, D.CATEGORY, D.VISIT_DATE
        FROM ADMIN.TRIP T
        JOIN ADMIN.TRIPDESTINATION TD ON T.TRIPID = TD.TRIPID
        JOIN ADMIN.DESTINATION D ON TD.DESTINATIONID = D.DESTINATIONID
@@ -42,6 +42,7 @@ async function getTripDetails(tripId) {
       const [
         , , , , , , 
         destinationName, 
+        description,
         city, 
         country, 
         coordinates, 
@@ -59,6 +60,7 @@ async function getTripDetails(tripId) {
       // Add destination details to the corresponding date
       tripDetails.destinationsByDay[formattedDate].push({
         destinationName,
+        description,
         city,
         country,
         coordinates: coordinates || null,
