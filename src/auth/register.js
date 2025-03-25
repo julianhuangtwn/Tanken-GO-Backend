@@ -64,7 +64,7 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "Invalid email domain. Please use a reachable email."  });
     } 
 
-    res.status(500).json({ error: "Thhis email is already registered." });
+    res.status(500).json({ error: "This email is already registered." });
     
   }
 });

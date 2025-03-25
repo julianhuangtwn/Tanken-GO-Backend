@@ -12,9 +12,13 @@ const passport = require('passport');
 
 // Create a router that we can use to mount our API
 const router = express.Router();
-router.use("/auth", require("../auth/register"));
-router.use('/auth', require('../auth/login'));
+router.use("/auth/register", require("../auth/register"));
+router.use('/auth/login', require('../auth/login'));
 router.use("/api/auth", require("./api/auth"));
+router.use("/auth/updateinfo", require("../auth/updateinfo"));
+router.use("/auth/forgotpwd", require("../auth/forgotpwd"));
+router.use("/auth/resetpwd", require("../auth/resetpwd"));
+
 
 /**
  * Expose all of our API routes on /v1/* to include an API version.
