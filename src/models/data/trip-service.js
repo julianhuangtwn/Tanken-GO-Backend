@@ -79,7 +79,7 @@ async function createTrip(tripData) {
                         country: dest.country,
                         coordinates: dest.coordinates,
                         category: dest.category,
-                        img_url: dest.img_url,
+                        img_url: dest.imgUrl,
                         visit_date: dest.visit_date,
                         tripId: newTripId,
                         latitude: dest.latitude,
