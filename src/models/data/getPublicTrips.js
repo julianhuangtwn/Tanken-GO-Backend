@@ -9,10 +9,21 @@ async function getPublicTrips() {
 
     const result = await connection.execute(
       `SELECT T.TRIPID, T.TRIPNAME,
-              T.STARTDATE, T.ENDDATE, T.TOTALCOSTESTIMATE
+              T.STARTDATE, T.ENDDATE, T.TOTALCOSTESTIMATE, 
+              D.IMG_URL, D.CITY, D.COUNTRY
        FROM ADMIN.TRIP T
-       WHERE T.ISPUBLIC = 'Y'
-       ORDER BY T.STARTDATE ASC`
+        JOIN (
+          SELECT TD.TRIPID, TD.DESTINATIONID
+          FROM ADMIN.TRIPDESTINATION TD
+          WHERE (TD.TRIPDESTINATIONID) IN (
+            SELECT MIN(TD2.TRIPDESTINATIONID)
+            FROM ADMIN.TRIPDESTINATION TD2
+            GROUP BY TD2.TRIPID
+          )
+        ) FirstDest ON T.TRIPID = FirstDest.TRIPID
+        JOIN ADMIN.DESTINATION D ON FirstDest.DESTINATIONID = D.DESTINATIONID
+        WHERE T.ISPUBLIC = 'Y'
+        ORDER BY T.STARTDATE ASC`
     );
 
     console.log("Raw database response:", result.rows);
@@ -28,7 +39,10 @@ async function getPublicTrips() {
       tripName: row[1],
       startDate: row[2],
       endDate: row[3],
-      totalCostEstimate: row[4]
+      totalCostEstimate: row[4],
+      imageUrl: row[5],
+      city: row[6],
+      country: row[7]
     }));
 
     console.log("Formatted Trips Data:", trips);
