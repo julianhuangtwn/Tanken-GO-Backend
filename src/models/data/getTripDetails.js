@@ -9,7 +9,7 @@ async function getTripDetails(tripId) {
     const result = await connection.execute(
       `SELECT T.TRIPID, T.TRIPNAME, T.STARTDATE, T.ENDDATE, T.TOTALCOSTESTIMATE,
               U.FIRST_NAME || ' ' || U.LAST_NAME AS USERNAME,
-              D.NAME AS DESTINATION_NAME, DBMS_LOB.SUBSTR(D.DESCRIPTION, 4000, 1) AS DESCRIPTION, D.CITY, D.COUNTRY, D.COORDINATES, D.CATEGORY, D.VISIT_DATE, D.IMG_URL
+              D.NAME AS DESTINATION_NAME, DBMS_LOB.SUBSTR(D.DESCRIPTION, 4000, 1) AS DESCRIPTION, D.CITY, D.COUNTRY, D.LATITUDE, D.LONGITUDE, D.CATEGORY, D.VISIT_DATE, D.IMG_URL
        FROM ADMIN.TRIP T
        JOIN ADMIN.TRIPDESTINATION TD ON T.TRIPID = TD.TRIPID
        JOIN ADMIN.DESTINATION D ON TD.DESTINATIONID = D.DESTINATIONID
@@ -34,7 +34,7 @@ async function getTripDetails(tripId) {
       attractionCount: 0,
       restaurantCount: 0,
       hotelCount: 0,
-      destinationsByDay: {}
+      destinationsByDay: []
     };
 
     // Process each row in the result
@@ -45,7 +45,8 @@ async function getTripDetails(tripId) {
         description,
         city, 
         country, 
-        coordinates, 
+        latitude,
+        longitude, 
         category, 
         visitDate,
         imgUrl
@@ -54,17 +55,18 @@ async function getTripDetails(tripId) {
       const formattedDate = visitDate.toISOString().split('T')[0];
 
       // Initialize the date key if it doesn't exist
-      if (!tripDetails.destinationsByDay[formattedDate]) {
-        tripDetails.destinationsByDay[formattedDate] = [];
-      }
+      // if (!tripDetails.destinationsByDay[formattedDate]) {
+      //   tripDetails.destinationsByDay[formattedDate] = [];
+      // }
 
       // Add destination details to the corresponding date
-      tripDetails.destinationsByDay[formattedDate].push({
+      tripDetails.destinationsByDay.push({
         destinationName,
         description,
         city,
         country,
-        coordinates: coordinates || null,
+        latitude: latitude || null,
+        longitude: longitude || null,
         category,
         visitDate: formattedDate,
         imgUrl
