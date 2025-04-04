@@ -18,11 +18,10 @@ async function imageGen(req, res) {
       const data = await response.json();
   
       if (!data.results.length) {
-        console.log(data.results)
         return res.status(404).json({ error: "No images found" });
       }
   
-      return { imageUrl: data.results[0].urls.raw + "&w=300&h=200" };
+      return { imageUrl: data.results[0].urls.raw + "&fm=jpg&fit=crop&w=1080&q=80&fit=max" };
     } catch (error) {
       console.error("Error fetching image:", error);
       res.status(500).json({ error: "Failed to fetch image" });
