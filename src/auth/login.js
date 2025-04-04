@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
             phone: user.PHONE_NUMBER,
             fullName: user.FIRST_NAME + ' ' + user.LAST_NAME,
         }
-        let token = jwt.sign(payload, secretOrKey);
+        let token = jwt.sign(payload, secretOrKey, { expiresIn: "1h" });
 
         return res.status(200).json(createSuccessResponse( { message: 'Login Successful', token: token}));
     } catch(err) {
