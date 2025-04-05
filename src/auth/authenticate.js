@@ -20,6 +20,12 @@ module.exports = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
+        if (error.name === "TokenExpiredError") {
+            logger.error("Token expired:");
+            logger.error(error.message);
+            return res.status(401).json({ message: "Token expired" });
+        }
+
         logger.error("Invalid Token:", error.message);
         res.status(400).json({ message: "Invalid Token" });
     }
