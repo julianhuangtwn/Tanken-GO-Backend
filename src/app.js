@@ -22,7 +22,8 @@ const app = express();
 app.use(cors({ 
   origin: [
   "https://tanken-go-frontend-test.onrender.com", 
-  "http://localhost:3000"] 
+  "http://localhost:3000",
+  process.env.FRONTEND_URL,] 
 }));
 // Use pino logging middleware
 app.use(pino);
