@@ -28,8 +28,5 @@ router.post('/trip', tripController.createTrip);
 router.put('/trip/:tripId', tripController.updateTrip);
 router.delete('/trip/:tripId', tripController.deleteTrip);
 
-// Route for fetching public trips
-router.get('/trips/public', require('./publicTrips.js'));
-router.get('/trips/public/:tripId', require('./tripDetails.js'));
 
 module.exports = router;
